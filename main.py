@@ -1,40 +1,42 @@
-import pandas as pd
-import numpy as np
-from ucimlrepo import fetch_ucirepo
-from enconders import *
-from train_results import *
-
-
 # main.py
-import subprocess
+
 from pathlib import Path
+import subprocess
+import sys
+
+def check_required_files(required_files):
+    print("🔍 Checking for required files...")
+    missing_files = [f for f in required_files if not Path(f).exists()]
+    if missing_files:
+        for f in missing_files:
+            print(f"❌ Missing required file: {f}")
+        sys.exit(1)
+    print("✅ All required files found.\n")
+
+def run_training_script():
+    print("🚀 Running training script (train_results.py)...")
+    try:
+        subprocess.run(["python", "train_results.py"], check=True)
+        print("✅ Training completed successfully!")
+    except subprocess.CalledProcessError as e:
+        print(f"❌ Error during training execution: {e}")
+    except Exception as e:
+        print(f"❌ Unexpected error: {e}")
 
 def main():
-    print("Starting machine learning pipeline...")
-    
-    # Verify all required files exist
-    required_files = [
-        'train_results.py',
-        'encoders.py',
-        'etl_preprocessing.py',
-        'train_test_split.py',
-        'import_datasets.py'
-    ]
-    
-    for file in required_files:
-        print(file)
-        if not Path(file).exists():
-            raise FileNotFoundError(f"Missing required file: {file}")
+    print("=== ML Pipeline Launcher ===")
 
-    # Run the training pipeline
-    try:
-        print("Executing train_results.py...")
-        subprocess.run(["python", "train_results.py"], check=True)
-        print("Training completed successfully!")
-    except subprocess.CalledProcessError as e:
-        print(f"Error running train_results.py: {e}")
-    except Exception as e:
-        print(f"Unexpected error: {e}")
+    # List of essential script files
+    required_files = [
+        "train_results.py",
+        "enconders.py",
+        "etl_preprocessing.py",
+        "train_test_split.py",
+        "import_datasets.py"
+    ]
+
+    check_required_files(required_files)
+    run_training_script()
 
 if __name__ == "__main__":
     main()
