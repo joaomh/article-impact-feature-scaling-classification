@@ -32,7 +32,6 @@ target_columns_classification = {
 
 all_dataframes_classification = {
     'breast_cancer_wisconsin_diagnostic': breast_cancer_wisconsin_diagnostic.data.features.join(breast_cancer_wisconsin_diagnostic.data.targets),
-    'breast_cancer_wisconsin_original': breast_cancer_wisconsin_original.data.features.join(breast_cancer_wisconsin_original.data.targets),
     'dry_bean_dataset': dry_bean_dataset.data.features.join(dry_bean_dataset.data.targets),
     'glass_identification': glass_identification.data.features.join(glass_identification.data.targets),
     'heart_disease': heart_disease.data.features.join(heart_disease.data.targets),
