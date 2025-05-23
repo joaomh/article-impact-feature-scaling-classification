@@ -1,0 +1,7 @@
+dataset_name: forest_fires
+model_hyperparameters:
+  loss_function: RMSE
+  random_state: 42
+model_name: CatBoost
+model_type: CatBoostRegressor
+scaling_name: RobustScaler

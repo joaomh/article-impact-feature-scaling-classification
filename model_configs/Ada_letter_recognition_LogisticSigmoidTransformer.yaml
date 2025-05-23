@@ -1,0 +1,10 @@
+dataset_name: letter_recognition
+model_hyperparameters:
+  algorithm: SAMME.R
+  estimator: null
+  learning_rate: 1.0
+  n_estimators: 50
+  random_state: 42
+model_name: Ada
+model_type: AdaBoostClassifier
+scaling_name: LogisticSigmoidTransformer

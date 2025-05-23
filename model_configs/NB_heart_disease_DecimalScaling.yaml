@@ -1,0 +1,7 @@
+dataset_name: heart_disease
+model_hyperparameters:
+  priors: null
+  var_smoothing: 1.0e-09
+model_name: NB
+model_type: GaussianNB
+scaling_name: DecimalScaling

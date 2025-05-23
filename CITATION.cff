@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Herrera Pinheiro"
+  given-names: "João Manoel"
+  orcid: "https://orcid.org/0009-0001-6192-7374"
+title: "The Impact of Feature Scaling In Machine Learning:
+Effects on Regression and Classification Tasks"
+date-released: 2025-01-01
+url: "https://github.com/joaomh/ml-book"

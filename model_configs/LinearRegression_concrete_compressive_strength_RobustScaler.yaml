@@ -1,0 +1,9 @@
+dataset_name: concrete_compressive_strength
+model_hyperparameters:
+  copy_X: true
+  fit_intercept: true
+  n_jobs: null
+  positive: false
+model_name: LinearRegression
+model_type: LinearRegression
+scaling_name: RobustScaler

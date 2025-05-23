@@ -1,0 +1,10 @@
+dataset_name: air_quality
+model_hyperparameters:
+  estimator: null
+  learning_rate: 1.0
+  loss: linear
+  n_estimators: 50
+  random_state: 42
+model_name: Ada
+model_type: AdaBoostRegressor
+scaling_name: ParetoScaling

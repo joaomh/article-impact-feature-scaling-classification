@@ -28,11 +28,11 @@ def main():
 
     # List of essential script files
     required_files = [
-        "train_results.py",
-        "enconders.py",
+        "import_datasets.py",
         "etl_preprocessing.py",
+        "enconders.py",
         "train_test_split.py",
-        "import_datasets.py"
+        "train_results.py"
     ]
 
     check_required_files(required_files)

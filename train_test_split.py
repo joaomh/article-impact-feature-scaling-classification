@@ -1,5 +1,6 @@
 from sklearn.model_selection import train_test_split
 from etl_preprocessing import all_dataframes_classification, all_dataframes_regression, target_columns_classification, target_columns_regression
+import pandas as pd
 
 # train test split for classification
 # Dictionary to store data splits
@@ -54,7 +55,7 @@ for dataset_name, df in all_dataframes_regression.items():
     
     # Perform train-test split
     X_train, X_test, y_train, y_test = train_test_split(
-        df.drop(columns=[target_column]), df[target_column], test_size=0.3, random_state=0
+        df.drop(columns=[target_column]), df[target_column], test_size=0.3, random_state=42
     )
 
     # Fill missing values with 0
@@ -70,3 +71,5 @@ for dataset_name, df in all_dataframes_regression.items():
         'y_train': y_train,
         'y_test': y_test
     }
+pd.DataFrame(dataset_split_classification).to_csv('dataset_split_classification.csv')
+pd.DataFrame(dataset_split_regression).to_csv('dataset_split_regression.csv')

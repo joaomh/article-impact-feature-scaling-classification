@@ -22,42 +22,40 @@ from catboost import CatBoostRegressor
 from lightgbm import LGBMRegressor
 from sklearn.linear_model import LinearRegression
 from pathlib import Path
+import tracemalloc
+import time
+import yaml
 
 from enconders import *
 from import_datasets import all_dataframes_classification, all_dataframes_regression, target_columns_classification, target_columns_regression
 from train_test_split import dataset_split_classification, dataset_split_regression
 models_classification = {
     'LR': LogisticRegression(random_state=0),
-    'SVM': SVC(kernel='linear'),
-    'MLP': MLPClassifier(),
-    'RF': RandomForestClassifier(),
+    'SVM': SVC(max_iter=1000,kernel='linear'),
+    'MLP': MLPClassifier(max_iter=1000, random_state=42),
+    'RF': RandomForestClassifier(random_state=42),
     'NB': GaussianNB(),
-    'CART': DecisionTreeClassifier(),
-    'LGBM': LGBMClassifier(),
-    'Ada': AdaBoostClassifier(),
-    'CatBoost': CatBoostClassifier(),
-    'XGBoost': XGBClassifier(),
+    'CART': DecisionTreeClassifier(random_state=42),
+    'LGBM': LGBMClassifier(random_state=42),
+    'Ada': AdaBoostClassifier(random_state=42),
+    'CatBoost': CatBoostClassifier(random_state=42),
+    'XGBoost': XGBClassifier(random_state=42),
     'KNN': KNeighborsClassifier()
 }
 
 models_regression = {
     'SVR': SVR(kernel='rbf'),
-    'MLP': MLPRegressor(),
-    'RF': RandomForestRegressor(),
-    'CART': DecisionTreeRegressor(),
-    'LGBM': LGBMRegressor(),
-    'Ada': AdaBoostRegressor(),
-    'CatBoost': CatBoostRegressor(),
+    'MLP': MLPRegressor(max_iter=1000, random_state=42),
+    'RF': RandomForestRegressor(random_state=42),
+    'CART': DecisionTreeRegressor(random_state=42),
+    'LGBM': LGBMRegressor(random_state=42),
+    'Ada': AdaBoostRegressor(random_state=42),
+    'CatBoost': CatBoostRegressor(random_state=42),
     'LinearRegression': LinearRegression(),
-    'XGBoost': XGBRegressor(),
+    'XGBoost': XGBRegressor(random_state=42),
     'KNN': KNeighborsRegressor()
 }
 
-import time
-import os
-import json
-import joblib
-import yaml
 results_classification = []
 from sklearn.metrics import accuracy_score, f1_score, recall_score, precision_score
 from sklearn.metrics import accuracy_score, f1_score, recall_score, precision_score
@@ -70,19 +68,30 @@ for model in models_classification:
                 scaler = eval(scaling_name)()  # Safely create scaler using eval
                 # Scale the training and testing sets
 
+                tracemalloc.start()
                 X_train_scaled = scaler.fit_transform(dataset_split_classification[dataset_name]['X_train'])
                 X_test_scaled = scaler.transform(dataset_split_classification[dataset_name]['X_test'])
+                current, peak = tracemalloc.get_traced_memory()
+                memory_used_kb = peak / 1024  # in KB
+                tracemalloc.stop()
             else:
                 if scaling_name == 'None':
-
+                    tracemalloc.start()
                     X_train_scaled = dataset_split_classification[dataset_name]['X_train']
                     X_test_scaled = dataset_split_classification[dataset_name]['X_test']
+                    current, peak = tracemalloc.get_traced_memory()
+                    memory_used_kb = peak / 1024  # in KB
+                    tracemalloc.stop()
                 else:
                     scaler = eval(scaling_name)(cols=dataset_split_classification[dataset_name]['X_train'].columns)
                     # Scale the training and testing sets
 
+                    tracemalloc.start()
                     X_train_scaled = scaler.fit_transform(dataset_split_classification[dataset_name]['X_train'])
                     X_test_scaled = scaler.transform(dataset_split_classification[dataset_name]['X_test'])
+                    current, peak = tracemalloc.get_traced_memory()
+                    memory_used_kb = peak / 1024  # in KB
+                    tracemalloc.stop()
 
             # Create the model instance
             # Initialize the model
@@ -107,9 +116,21 @@ for model in models_classification:
             accuracy = accuracy_score(y_pred, dataset_split_classification[dataset_name]['y_test'].values.ravel())
 
             # Store results directly in a list
-            results_classification.append([accuracy, model, time_train, time_inference, scaling_name, dataset_name])
-df_results_classification = pd.DataFrame(results_classification,columns=['accuracy', 'model', 'time_train', 'time_inference','scaling_name', 'dataset_name'])
-df_results_classification.to_csv('results_classification.csv')
+            results_classification.append([accuracy, model, time_train, time_inference, scaling_name, dataset_name,memory_used_kb])
+            # Save model configuration
+            model_config = {
+                'model_name': model,
+                'model_type': type(clf).__name__,
+                'model_hyperparameters': clf.get_params(),
+                'scaling_name': scaling_name,
+                'dataset_name': dataset_name,
+            }
+
+            Path("model_configs").mkdir(exist_ok=True)
+            with open(f"model_configs/{model}_{dataset_name}_{scaling_name}.yaml", 'w') as f:
+                yaml.dump(model_config, f)
+
+df_results_classification = pd.DataFrame(results_classification,columns=['accuracy', 'model', 'time_train', 'time_inference','scaling_name', 'dataset_name','memory_used_kb'])
 
 results_regression = []
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
@@ -121,21 +142,29 @@ for model in models_regression:
             if scaling_name in common_scalers:
                 scaler = eval(scaling_name)()  # Safely create scaler using eval
                 # Scale the training and testing sets
-
+                tracemalloc.start()
                 X_train_scaled = scaler.fit_transform(dataset_split_regression[dataset_name]['X_train'])
                 X_test_scaled = scaler.transform(dataset_split_regression[dataset_name]['X_test'])
+                current, peak = tracemalloc.get_traced_memory()
+                memory_used_kb = peak / 1024  # in KB
+                tracemalloc.stop()                
             else:
                 if scaling_name == 'None':
-
+                    tracemalloc.start()
                     X_train_scaled = dataset_split_regression[dataset_name]['X_train']
                     X_test_scaled = dataset_split_regression[dataset_name]['X_test']
+                    current, peak = tracemalloc.get_traced_memory()
+                    memory_used_kb = peak / 1024  # in KB
+                    tracemalloc.stop()                    
                 else:
                     scaler = eval(scaling_name)(cols=dataset_split_regression[dataset_name]['X_train'].columns)
                     # Scale the training and testing sets
-
+                    tracemalloc.start()
                     X_train_scaled = scaler.fit_transform(dataset_split_regression[dataset_name]['X_train'])
                     X_test_scaled = scaler.transform(dataset_split_regression[dataset_name]['X_test'])
-
+                    current, peak = tracemalloc.get_traced_memory()
+                    memory_used_kb = peak / 1024  # in KB
+                    tracemalloc.stop()
 
             # Create the model instance
             if model == "LGBM":
@@ -160,7 +189,21 @@ for model in models_regression:
             
 
             # Store results directly in a list
-            results_regression.append([r2score, mae, mse, model, time_train, time_inference, scaling_name, dataset_name])
+            results_regression.append([r2score, mae, mse, model, time_train, time_inference, scaling_name, dataset_name,memory_used_kb])
+            # Save model configuration
+            model_config = {
+                'model_name': model,
+                'model_type': type(clf).__name__,
+                'model_hyperparameters': clf.get_params(),
+                'scaling_name': scaling_name,
+                'dataset_name': dataset_name,
+            }
 
-df_regression = pd.DataFrame(results_regression,columns=['r2score', 'mae','mse', 'model', 'time_train', 'time_inference','scaling_name', 'dataset_name'])
-df_regression.to_csv('results_regression.csv')
+            Path("model_configs").mkdir(exist_ok=True)
+            with open(f"model_configs/{model}_{dataset_name}_{scaling_name}.yaml", 'w') as f:
+                yaml.dump(model_config, f)
+
+
+df_regression = pd.DataFrame(results_regression,columns=['r2score', 'mae','mse', 'model', 'time_train', 'time_inference','scaling_name', 'dataset_name','memory_used_kb'])
+
+pd.concat([df_results_classification, df_regression], axis=0).to_csv('results_final.csv', index=False)

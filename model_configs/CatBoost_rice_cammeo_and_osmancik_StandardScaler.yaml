@@ -1,0 +1,6 @@
+dataset_name: rice_cammeo_and_osmancik
+model_hyperparameters:
+  random_state: 42
+model_name: CatBoost
+model_type: CatBoostClassifier
+scaling_name: StandardScaler
