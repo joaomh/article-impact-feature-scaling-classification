@@ -4,6 +4,7 @@ from sklearn.preprocessing import QuantileTransformer
 from typing import List
 import pandas as pd
 import numpy as np
+import math
 
 class MeanCentered(BaseEstimator, TransformerMixin):
     def __init__(self, cols: List[str]):
@@ -70,13 +71,21 @@ class DecimalScaling(BaseEstimator, TransformerMixin):
         self.cols = cols
 
     def fit(self, X: pd.DataFrame, y: pd.Series = None):
-        self.len_ = {col: len(str(abs(np.max((X[col]))))) for col in self.cols}
+        self.scale_ = {}
+        for col in self.cols:
+            max_abs = np.max(np.abs(X[col]))
+            if max_abs == 0:
+                j = 0  
+            else:
+                j = math.ceil(np.log10(max_abs + 1e-10))  
+            self.scale_[col] = j
         return self
 
     def transform(self, X: pd.DataFrame):
         X = X.copy()
         for col in self.cols:
-            X[col] = X[col] / 10**self.len_[col]
+            j = self.scale_[col]
+            X[col] = X[col] / (10 ** j)
         return X
 
 class TanhTransformer(BaseEstimator, TransformerMixin):
