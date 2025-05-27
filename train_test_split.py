@@ -22,7 +22,7 @@ for dataset_name, df in all_dataframes_classification.items():
 
     # Train-test split
     X_train, X_test, y_train, y_test = train_test_split(
-        df.drop(columns=[target_column]), df[target_column], test_size=0.3, random_state=0
+        df.drop(columns=[target_column]), df[target_column], test_size=0.3, random_state=42
     )
 
     X_train = X_train.fillna(0)
