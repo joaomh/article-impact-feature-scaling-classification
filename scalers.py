@@ -76,7 +76,7 @@ class DecimalScaling(BaseEstimator, TransformerMixin):
             if max_abs == 0:
                 j = 0  
             else:
-                j = math.ceil(np.log10(max_abs + 1e-10))  
+                j = math.ceil(np.log10(max_abs + 1e-17))  
             self.scale_[col] = j
         return self
 
