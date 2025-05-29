@@ -26,7 +26,7 @@ import tracemalloc
 import time
 import yaml
 
-from enconders import *
+from scalers import *
 from import_datasets import all_dataframes_classification, all_dataframes_regression, target_columns_classification, target_columns_regression
 from train_test_split import dataset_split_classification, dataset_split_regression
 models_classification = {
