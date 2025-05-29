@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 from ucimlrepo import fetch_ucirepo
-from enconders import *
 
 # Fetch datasets
 # Classification datasets
