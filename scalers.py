@@ -20,21 +20,6 @@ class MeanCentered(BaseEstimator, TransformerMixin):
             X[col] = (X[col] - self.means_[col])
         return X
     
-class MedianAbsScaler(BaseEstimator, TransformerMixin):
-    def __init__(self, cols: List[str]):
-        self.cols = cols
-
-    def fit(self, X: pd.DataFrame, y: pd.Series = None):
-        self.median_ = {col: np.median(X[col]) for col in self.cols}
-        self.mad_ = {col: np.median(np.absolute(X[col]-np.median(X[col]))) for col in self.cols}
-        return self
-
-    def transform(self, X: pd.DataFrame):
-        X = X.copy()
-        for col in self.cols:
-            X[col] = (X[col] - self.median_[col]) / self.mad_[col]
-        return X
-    
 class VariableStabilityScaling(BaseEstimator, TransformerMixin):
     def __init__(self, cols: List[str]):
         self.cols = cols
@@ -137,7 +122,7 @@ scaling_list = {
     'MaxAbsScaler':MaxAbsScaler(),
     'StandardScaler':StandardScaler(),
     'ParetoScaling':ParetoScaling,
-    'StandardStabilityScaling':VariableStabilityScaling,
+    'VariableStabilityScaling':VariableStabilityScaling,
     'MeanCentered':MeanCentered,
     'None': 'None',
     'RobustScaler':RobustScaler(),
