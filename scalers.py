@@ -18,7 +18,7 @@ class MeanCentered(BaseEstimator, TransformerMixin):
         X = X.copy()
         for col in self.cols:
             X[col] = (X[col] - self.means_[col])
-        return X
+        return X.to_numpy()
     
 class VariableStabilityScaling(BaseEstimator, TransformerMixin):
     def __init__(self, cols: List[str]):
@@ -33,7 +33,7 @@ class VariableStabilityScaling(BaseEstimator, TransformerMixin):
         X = X.copy()
         for col in self.cols:
             X[col] = ((X[col] - self.means_[col]) / self.stds_[col])*(self.means_[col]/self.stds_[col])
-        return X
+        return X.to_numpy()
     
 class ParetoScaling(BaseEstimator, TransformerMixin):
     def __init__(self, cols: List[str]):
@@ -48,7 +48,7 @@ class ParetoScaling(BaseEstimator, TransformerMixin):
         X = X.copy()
         for col in self.cols:
             X[col] = (X[col] - self.means_[col]) / np.sqrt(self.stds_[col])
-        return X
+        return X.to_numpy()
     
 class DecimalScaling(BaseEstimator, TransformerMixin):
     def __init__(self, cols: List[str]):
@@ -70,7 +70,7 @@ class DecimalScaling(BaseEstimator, TransformerMixin):
         for col in self.cols:
             j = self.scale_[col]
             X[col] = X[col] / (10 ** j)
-        return X
+        return X.to_numpy()
 
 class TanhTransformer(BaseEstimator, TransformerMixin):
     def __init__(self, cols: List[str]):
@@ -85,7 +85,7 @@ class TanhTransformer(BaseEstimator, TransformerMixin):
         X = X.copy()
         for col in self.cols:
             X[col] = 0.5*(np.tanh(0.01*((X[col] - self.means_[col])/ self.stds_[col])) + 1)
-        return X
+        return X.to_numpy()
 
 class LogisticSigmoidTransformer(BaseEstimator, TransformerMixin):
     def __init__(self, cols: List[str]):
@@ -100,7 +100,7 @@ class LogisticSigmoidTransformer(BaseEstimator, TransformerMixin):
         X = X.copy()
         for col in self.cols:
             X[col] = 1 /(1 + np.exp(-(X[col] - self.means_[col]) / self.stds_[col]))
-        return X
+        return X.to_numpy()
     
 class HyperbolicTangentTransformer(BaseEstimator, TransformerMixin):
     def __init__(self, cols: List[str]):
@@ -115,7 +115,7 @@ class HyperbolicTangentTransformer(BaseEstimator, TransformerMixin):
         X = X.copy()
         for col in self.cols:
             X[col] = (1 - np.exp(-(X[col] - self.means_[col]) / self.stds_[col])) / (1 + np.exp(-(X[col] - self.means_[col]) / self.stds_[col]))
-        return X
+        return X.to_numpy()
 
 scaling_list = {
     'MinMaxScaler':MinMaxScaler(),

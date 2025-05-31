@@ -1,4 +1,3 @@
-import sklearn
 import time
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
@@ -17,18 +16,18 @@ from sklearn.ensemble import AdaBoostRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.neighbors import KNeighborsRegressor
+from sklearn.metrics import accuracy_score, r2_score, mean_absolute_error, mean_squared_error
 from xgboost import XGBRegressor
 from catboost import CatBoostRegressor
 from lightgbm import LGBMRegressor
 from sklearn.linear_model import LinearRegression
+from pytorch_tabnet.tab_model import TabNetClassifier, TabNetRegressor
 from pathlib import Path
 import tracemalloc
-import time
 import yaml
-
 from scalers import *
-from import_datasets import all_dataframes_classification, all_dataframes_regression, target_columns_classification, target_columns_regression
 from train_test_split import dataset_split_classification, dataset_split_regression
+
 models_classification = {
     'LR': LogisticRegression(random_state=0),
     'SVM': SVC(max_iter=1000,kernel='linear'),
@@ -39,8 +38,9 @@ models_classification = {
     'LGBM': LGBMClassifier(random_state=42),
     'Ada': AdaBoostClassifier(random_state=42),
     'CatBoost': CatBoostClassifier(random_state=42),
-    'XGBoost': XGBClassifier(random_state=42),
-    'KNN': KNeighborsClassifier()
+    'XGBoost': XGBClassifier(objective="binary:logistic",random_state=42),
+    'KNN': KNeighborsClassifier(),
+    'TabNet': TabNetClassifier(seed=42)
 }
 
 models_regression = {
@@ -53,12 +53,11 @@ models_regression = {
     'CatBoost': CatBoostRegressor(random_state=42),
     'LinearRegression': LinearRegression(),
     'XGBoost': XGBRegressor(random_state=42),
-    'KNN': KNeighborsRegressor()
+    'KNN': KNeighborsRegressor(),
+    'TabNet': TabNetRegressor(seed=42)
 }
 
 results_classification = []
-from sklearn.metrics import accuracy_score, f1_score, recall_score, precision_score
-from sklearn.metrics import accuracy_score, f1_score, recall_score, precision_score
 for model in models_classification:
     for scaling_name in scaling_list:
         for dataset_name in dataset_split_classification:
@@ -77,8 +76,8 @@ for model in models_classification:
             else:
                 if scaling_name == 'None':
                     tracemalloc.start()
-                    X_train_scaled = dataset_split_classification[dataset_name]['X_train']
-                    X_test_scaled = dataset_split_classification[dataset_name]['X_test']
+                    X_train_scaled = dataset_split_classification[dataset_name]['X_train'].to_numpy()
+                    X_test_scaled = dataset_split_classification[dataset_name]['X_test'].to_numpy()
                     current, peak = tracemalloc.get_traced_memory()
                     memory_used_kb = peak / 1024  # in KB
                     tracemalloc.stop()
@@ -104,7 +103,7 @@ for model in models_classification:
 
             # Train the model
             start = time.time()
-            clf.fit(X_train_scaled, dataset_split_classification[dataset_name]['y_train'].values.ravel())
+            clf.fit(X_train_scaled, dataset_split_classification[dataset_name]['y_train'].to_numpy().ravel())
             end = time.time()
             time_train = end - start
 
@@ -113,7 +112,7 @@ for model in models_classification:
             y_pred = clf.predict(X_test_scaled)
             end = time.time()
             time_inference = end - start
-            accuracy = accuracy_score(y_pred, dataset_split_classification[dataset_name]['y_test'].values.ravel())
+            accuracy = accuracy_score(y_pred, dataset_split_classification[dataset_name]['y_test'].to_numpy().ravel())
 
             # Store results directly in a list
             results_classification.append([accuracy, model, time_train, time_inference, scaling_name, dataset_name,memory_used_kb])
@@ -133,7 +132,6 @@ for model in models_classification:
 df_results_classification = pd.DataFrame(results_classification,columns=['accuracy', 'model', 'time_train', 'time_inference','scaling_name', 'dataset_name','memory_used_kb'])
 
 results_regression = []
-from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 for model in models_regression:
     for scaling_name in scaling_list:
         for dataset_name in dataset_split_regression:
@@ -151,8 +149,8 @@ for model in models_regression:
             else:
                 if scaling_name == 'None':
                     tracemalloc.start()
-                    X_train_scaled = dataset_split_regression[dataset_name]['X_train']
-                    X_test_scaled = dataset_split_regression[dataset_name]['X_test']
+                    X_train_scaled = dataset_split_regression[dataset_name]['X_train'].to_numpy()
+                    X_test_scaled = dataset_split_regression[dataset_name]['X_test'].to_numpy()
                     current, peak = tracemalloc.get_traced_memory()
                     memory_used_kb = peak / 1024  # in KB
                     tracemalloc.stop()                    
@@ -172,17 +170,35 @@ for model in models_regression:
             else:
                 clf = models_regression[model]
 
-            # Train the model
-            start = time.time()
-            clf.fit(X_train_scaled, dataset_split_regression[dataset_name]['y_train'])
-            end = time.time()
-            time_train = end - start
+            if model == "TabNet":
+                y_train = dataset_split_regression[dataset_name]['y_train'].values.reshape(-1, 1)
+                y_test = dataset_split_regression[dataset_name]['y_test'].values.reshape(-1, 1)
+                # Train the model
+                start = time.time()
+                clf.fit(X_train_scaled, y_train)
+                end = time.time()
+                time_train = end - start
+                # Make predictions and calculate accuracy
+                start = time.time()
+                y_pred = clf.predict(X_test_scaled)
+                end = time.time()
+                time_inference = end - start
+                r2score = r2_score(dataset_split_regression[dataset_name]['y_test'], y_pred)
+                mae =  mean_absolute_error(dataset_split_regression[dataset_name]['y_test'], y_pred)
+                mse =  mean_squared_error(dataset_split_regression[dataset_name]['y_test'], y_pred)
 
-            # Make predictions and calculate accuracy
-            start = time.time()
-            y_pred = clf.predict(X_test_scaled)
-            end = time.time()
-            time_inference = end - start
+            else:
+                # Train the model
+                start = time.time()
+                clf.fit(X_train_scaled, dataset_split_regression[dataset_name]['y_train'])
+                end = time.time()
+                time_train = end - start
+
+                # Make predictions and calculate accuracy
+                start = time.time()
+                y_pred = clf.predict(X_test_scaled)
+                end = time.time()
+                time_inference = end - start
             r2score = r2_score(dataset_split_regression[dataset_name]['y_test'], y_pred)
             mae =  mean_absolute_error(dataset_split_regression[dataset_name]['y_test'], y_pred)
             mse =  mean_squared_error(dataset_split_regression[dataset_name]['y_test'], y_pred)
