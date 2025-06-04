@@ -29,7 +29,7 @@ def main():
     # List of essential script files
     required_files = [
         "import_datasets.py",
-        "etl_preprocessing.py",
+        "etl_cleaning.py",
         "scalers.py",
         "train_test_split.py",
         "train_results.py"

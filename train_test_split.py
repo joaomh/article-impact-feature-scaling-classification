@@ -1,5 +1,5 @@
 from sklearn.model_selection import train_test_split
-from etl_preprocessing import all_dataframes_classification, all_dataframes_regression, target_columns_classification, target_columns_regression
+from etl_cleaning import all_dataframes_classification, all_dataframes_regression, target_columns_classification, target_columns_regression
 import pandas as pd
 
 # train test split for classification
