@@ -115,7 +115,7 @@ for model in models_classification:
             accuracy = accuracy_score(y_pred, dataset_split_classification[dataset_name]['y_test'].to_numpy().ravel())
 
             # Store results directly in a list
-            results_classification.append([accuracy, model, time_train, time_inference, scaling_name, dataset_name,memory_used_kb])
+            results_classification.append([accuracy, model, time_train, time_inference, scaling_name, dataset_name, memory_used_kb])
             # Save model configuration
             model_config = {
                 'model_name': model,
@@ -173,32 +173,35 @@ for model in models_regression:
             if model == "TabNet":
                 y_train = dataset_split_regression[dataset_name]['y_train'].values.reshape(-1, 1)
                 y_test = dataset_split_regression[dataset_name]['y_test'].values.reshape(-1, 1)
-                # Train the model
-                start = time.time()
-                clf.fit(X_train_scaled, y_train)
-                end = time.time()
-                time_train = end - start
-                # Make predictions and calculate accuracy
-                start = time.time()
-                y_pred = clf.predict(X_test_scaled)
-                end = time.time()
-                time_inference = end - start
-                r2score = r2_score(dataset_split_regression[dataset_name]['y_test'], y_pred)
-                mae =  mean_absolute_error(dataset_split_regression[dataset_name]['y_test'], y_pred)
-                mse =  mean_squared_error(dataset_split_regression[dataset_name]['y_test'], y_pred)
+                ## Train the model
+                #start = time.time()
+                #clf.fit(X_train_scaled, y_train)
+                #end = time.time()
+                #time_train = end - start
+                ## Make predictions and calculate accuracy
+                #start = time.time()
+                #y_pred = clf.predict(X_test_scaled)
+                #end = time.time()
+                #time_inference = end - start
+                #r2score = r2_score(dataset_split_regression[dataset_name]['y_test'], y_pred)
+                #mae =  mean_absolute_error(dataset_split_regression[dataset_name]['y_test'], y_pred)
+                #mse =  mean_squared_error(dataset_split_regression[dataset_name]['y_test'], y_pred)
 
             else:
-                # Train the model
-                start = time.time()
-                clf.fit(X_train_scaled, dataset_split_regression[dataset_name]['y_train'])
-                end = time.time()
-                time_train = end - start
+                y_train = dataset_split_regression[dataset_name]['y_train']
+                y_test = dataset_split_regression[dataset_name]['y_test']
+            
+            # Train the model
+            start = time.time()
+            clf.fit(X_train_scaled, y_train)
+            end = time.time()
+            time_train = end - start
 
-                # Make predictions and calculate accuracy
-                start = time.time()
-                y_pred = clf.predict(X_test_scaled)
-                end = time.time()
-                time_inference = end - start
+            # Make predictions and calculate accuracy
+            start = time.time()
+            y_pred = clf.predict(X_test_scaled)
+            end = time.time()
+            time_inference = end - start
             r2score = r2_score(dataset_split_regression[dataset_name]['y_test'], y_pred)
             mae =  mean_absolute_error(dataset_split_regression[dataset_name]['y_test'], y_pred)
             mse =  mean_squared_error(dataset_split_regression[dataset_name]['y_test'], y_pred)
