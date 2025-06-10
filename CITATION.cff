@@ -1,10 +1,33 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite it as below."
+message: "If you use this work, please cite it as below."
 authors:
-- family-names: "Herrera Pinheiro"
-  given-names: "João Manoel"
-  orcid: "https://orcid.org/0009-0001-6192-7374"
-title: "The Impact of Feature Scaling In Machine Learning:
-Effects on Regression and Classification Tasks"
-date-released: 2025-01-01
-url: "https://github.com/joaomh/ml-book"
+  - family-names: Herrera Pinheiro
+    given-names: João Manoel
+    orcid: "https://orcid.org/0009-0001-6192-7374"
+  - family-names: Vilas Boas de Oliveira
+    given-names: Suzana
+    orcid: "https://orcid.org/0009-0004-2747-0229"
+  - family-names: Henrique Segreto Silva
+    given-names: Thiago
+    orcid: "https://orcid.org/0009-0004-6676-8343"
+  - family-names: Antonio Rabelo Saraiva
+    given-names: Pedro 
+  - family-names: Ferreira de Souza
+    given-names: Enzo
+  - family-names: André Ambrosio
+    given-names: Leonardo
+    orcid: "https://orcid.org/0000-0003-0404-9509"
+  - family-names: Becker
+    given-names: Marcelo
+    orcid: "https://orcid.org/0000-0002-7508-5817"
+title: "This research addresses the critical lack of comprehensive studies on feature scaling by systematically evaluating 12 scaling techniques - including several less common transformations - across 14 different Machine Learning algorithms and 16 datasets for classification and regression tasks. We meticulously analyzed impacts on predictive performance (using metrics such as accuracy, MAE, MSE, and R²) and computational costs (training time, inference time, and memory usage). Key findings reveal that while ensemble methods (such as Random Forest and gradient boosting models like XGBoost, CatBoost and LightGBM) demonstrate robust performance largely independent of scaling, other widely used models such as Logistic Regression, SVMs, TabNet, and MLPs show significant performance variations highly dependent on the chosen scaler. This extensive empirical analysis, with all source code, experimental results, and model parameters made publicly available to ensure complete transparency and reproducibility, offers model-specific crucial guidance to practitioners on the need for an optimal selection of feature scaling techniques."
+abstract: ""
+journal: ""
+volume: 
+issue: 
+year: 2025
+month: 
+start: 
+end: 
+doi: 
+url: 
