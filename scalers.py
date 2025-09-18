@@ -32,7 +32,7 @@ class VariableStabilityScaling(BaseEstimator, TransformerMixin):
     def transform(self, X: pd.DataFrame):
         X = X.copy()
         for col in self.cols:
-            X[col] = ((X[col] - self.means_[col]) / self.stds_[col])*(self.means_[col]/self.stds_[col])
+            X[col] = ((X[col] - self.means_[col]) / self.stds_[col])*(self.stds_[col]/self.means_[col])
         return X.to_numpy()
     
 class ParetoScaling(BaseEstimator, TransformerMixin):
