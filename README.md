@@ -9,11 +9,11 @@
 <p align="center">
   <strong>João Manoel Herrera Pinheiro</strong><sup>1</sup> &middot;
   <strong>Suzana Vilas Boas de Oliveira</strong><sup>2</sup> &middot;
-  <strong>Thiago Henrique Segreto Silva</strong><sup>2</sup> &middot;
-  <strong>Pedro Antonio Rabelo Saraiva</strong><sup>3</sup> &middot;
+  <strong>Thiago Henrique Segreto Silva</strong><sup>1</sup> &middot;
+  <strong>Pedro Antonio Rabelo Saraiva</strong><sup>1</sup> &middot;
   <strong>Enzo Ferreira de Souza</strong><sup>1</sup><br>
-  <strong>Ricardo V. Godoy</strong><sup>4</sup> &middot;
-  <strong>Leonardo André Ambrosio</strong><sup>5</sup> &middot;
+  <strong>Ricardo V. Godoy</strong><sup>1</sup> &middot;
+  <strong>Leonardo André Ambrosio</strong><sup>2</sup> &middot;
   <strong>Marcelo Becker</strong><sup>1</sup>
 </p>
 
