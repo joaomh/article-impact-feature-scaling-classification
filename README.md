@@ -102,7 +102,7 @@ The pipeline follows the workflow below:
 
 Responsible for:
 
-- Loading datasets
+- Loading datasets (from UCI repo)
 - Reading metadata
 - Preparing the raw data for preprocessing
 
