@@ -18,11 +18,8 @@
 </p>
 
 <p align="center">
-  <sup>1</sup> São Carlos School of Engineering, University of São Paulo (USP), São Carlos, Brazil<br>
-  <sup>2</sup> Department of Ecology and Evolutionary Biology, Federal University of São Carlos (UFSCar), São Carlos, Brazil<br>
-  <sup>3</sup> Federal University of Tocantins (UFT), Porto Nacional, Brazil<br>
-  <sup>4</sup> Department of Biology (FFCLRP), University of São Paulo (USP), Ribeirão Preto, Brazil<br>
-  <sup>5</sup> Deputado Jesualdo Cavalcanti Campus, State University of Piauí (UESPI), Corrente, Brazil
+  <sup>1</sup> Department of Mechanical Engineering, University of São Paulo, São Paulo 13566-590, Brazil<br>
+  <sup>2</sup> Department of Electrical and Computer Engineering, University of São Paulo, São Paulo 13566-590, Brazil<br>
 </p>
 
 <p align="center">
